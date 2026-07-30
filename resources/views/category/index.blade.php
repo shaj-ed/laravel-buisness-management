@@ -12,5 +12,31 @@
                 </a>
             </div>
         </div>
+
+        <div>
+            <p class="mt-2">Total categories {{ $totalItems }}</p>
+
+            <div class="mt-4 flex gap-6 flex-wrap">
+                @foreach ($categories as $category)
+                    <x-category-card :category="$category" />
+                @endforeach
+            </div>
+        </div>
+
+        @if (session('success'))
+            <p id="successAlert" class="mt-2 mb-4 px-4 py-3 rounded-lg bg-green-50 text-green-700 border border-green-200 text-sm transition-opacity duration-500">{{ session('success') }}</p>
+        @endif
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const successAlert = document.querySelector("#successAlert");
+            
+            if(successAlert) {
+                setTimeout(() => {
+                    successAlert.remove();
+                }, 3000)
+            }
+        })
+    </script>
 </x-layout>

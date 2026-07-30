@@ -4,7 +4,7 @@
         <h2 class="text-xl font-semibold text-slate-800">Create Categories</h2>
 
         <div class="mt-4">
-            <form action="{{ route('category.store') }}" method="POST">
+            <form id="categoryForm" action="{{ route('category.store') }}" method="POST">
                 @csrf
                 <div class="mb-4">
                     <label class="mb-2 block">Category Name *</label>
@@ -12,9 +12,13 @@
                     <input
                         class="border px-2 py-1 rounded-sm w-xl block"
                         placeholder="Enter name"
-                        name="categoryName"
+                        name="name"
                         value=""
                     />
+
+                    @error('name')
+                        <p class="text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
@@ -31,10 +35,22 @@
                 
                 <button type="submit"
                     class="mt-4 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-                    Save
+                    <span id="saveButton" class="block">Save</span>
+                    <span id="loadingButton" class="hidden">Saving...</span>
                 </button>
             </form>
-
         </div>
     </div>
+
+    <script>
+        const categoryForm = document.querySelector("#categoryForm");
+        const saveButton = document.querySelector("#saveButton");
+        const loadingButton = document.querySelector("#loadingButton");
+
+        categoryForm.addEventListener('submit', () => {
+            saveButton.classList.remove('block');
+            saveButton.classList.add('hidden');
+            loadingButton.classList.remove('hidden');
+        })
+    </script>
 </x-layout>

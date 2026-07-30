@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Date;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public function index() {
-        return view('category.index', ['name' => 'shajed']);
+        $categories = Category::all();
+        $totalItems = Category::count();
+
+        return view('category.index', [
+                'categories' => $categories,
+                'totalItems' => $totalItems
+            ]);
     }
 
     public function create() {
@@ -17,16 +22,20 @@ class CategoryController extends Controller
     }
 
      public function store(Request $request) {
-        $categoryName = $request->input('categoryName');
-        $slug = "/" . $categoryName;
-
-        Category::create([
-            'name' => $categoryName,
-            'slug' => $slug,
-            'description' => $request->input('description'),
-            'status' => true
+        $validated = $request->validate([
+            'name' => 'required | string | max:30',
+            'description' => 'nullable | string',
+            'status' => 'nullable | boolean'
         ]);
+        
+        $categoryName = $request->input('name');
+        $to_array = explode(' ', strtolower($categoryName));
+        $validated["slug"] = join('_', $to_array);
+        
+        Category::create($validated);
 
-        return redirect()->back();
+        return redirect()
+        ->route('category.index')
+        ->with('success', 'Category created successfully');
     }
 }
