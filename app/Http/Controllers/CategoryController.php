@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     public function index() {
-        $categories = Category::all();
+        $categories = Category::latest()->get();
         $totalItems = Category::count();
 
         return view('category.index', [
@@ -37,5 +37,35 @@ class CategoryController extends Controller
         return redirect()
         ->route('category.index')
         ->with('success', 'Category created successfully');
+    }
+
+    public function edit(Category $category) {
+        return view('category.edit', ['category'=>$category]);
+    }
+
+    public function update(Request $request, Category $category) {
+        $validated = $request->validate([
+            'name' => 'required | string | max:30',
+            'description' => 'nullable | string',
+        ]);
+
+        $categoryName = $request->input('name');
+        $to_array = explode(' ', strtolower($categoryName));
+        $validated["slug"] = join('_', $to_array);
+        $validated['status'] = $request->has('status');
+
+        $category->update($validated);
+
+        return redirect()
+            ->route('category.index')
+            ->with('success', 'Category updated successfully');
+    }
+
+    public function destroy(Category $category) {
+        $category->delete();
+
+        return redirect()
+            ->route('category.index')
+            ->with('success', 'Category deleted successfully');
     }
 }

@@ -15,9 +15,18 @@
         {{ $category->description ?? "No description available" }}
     </p>
 
-    <div class="mt-6">
-        <a href="{{ route('category.create') }}" class="py-1 px-4 rounded bg-slate-800 text-white text-sm font-semibold">
+    <div class="mt-6 flex gap-4">
+        <a href="{{ route('category.edit', $category) }}" class="py-1 px-4 rounded bg-slate-800 text-white text-sm font-semibold">
             Edit
         </a>
+
+        <form action="{{ route('category.delete', $category) }}" method="POST">
+            @csrf
+            @method('DELETE')
+
+             <button type="submit" class="py-1 px-4 rounded bg-red-600 text-white text-sm font-semibold">
+                Delete
+             </button>
+        </form>
     </div>
 </article>
